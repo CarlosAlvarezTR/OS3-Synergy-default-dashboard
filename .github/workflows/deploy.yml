@@ -1,7 +1,9 @@
-name: Deploy to GitHub Pages
+name: Deploy Next.js to GitHub Pages
 
 on:
   push:
+    branches: [main]
+  pull_request:
     branches: [main]
 
 permissions:
@@ -16,6 +18,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -24,22 +27,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "18"
-          registry-url: ${{ secrets.NPM_REGISTRY }}
           cache: "npm"
-          
+
       - name: Configure npm registry
         run: |
-          npm config set registry ${{ secrets.NPM_REGISTRY }}
-          npm config set //${{ secrets.NPM_REGISTRY }}/:_authToken ${{ secrets.NPM_AUTH_TOKEN }}
-        env:
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-          
+          echo "registry=${{ secrets.NPM_REGISTRY }}" > .npmrc
+          echo "always-auth=true" >> .npmrc
+          echo "//tr1.jfrog.io/artifactory/api/npm/npm/:_authToken=${{ secrets.NPM_AUTH_TOKEN }}" >> .npmrc
+
       - name: Install dependencies
-        run: npm install
-        env:
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-        
-      - name: Build application
+        run: npm ci
+
+      - name: Build
         run: npm run build
 
       - name: Setup Pages
