@@ -608,7 +608,7 @@ export default function Dashboard() {
                   onDragEnd={handleDragEnd}
                 >
                   <Image
-                    src="/icons/drag-handle-icon.png"
+                    src="/OS3-Synergy-default-dashboard/icons/drag-handle-icon.png"
                     alt="Drag"
                     width={20}
                     height={20}
@@ -621,7 +621,7 @@ export default function Dashboard() {
                   onClick={() => toggleWidgetSize("applications")}
                 >
                   <Image
-                    src="/icons/expand-icon.png"
+                    src="/OS3-Synergy-default-dashboard/icons/expand-icon.png"
                     alt="Expand"
                     width={20}
                     height={20}
@@ -637,7 +637,7 @@ export default function Dashboard() {
                     }
                   >
                     <Image
-                      src="/icons/menu-dots-icon.png"
+                      src="/OS3-Synergy-default-dashboard/icons/menu-dots-icon.png"
                       alt="Menu"
                       width={20}
                       height={20}
@@ -818,7 +818,7 @@ export default function Dashboard() {
                   onDragEnd={handleDragEnd}
                 >
                   <Image
-                    src="/icons/drag-handle-icon.png"
+                    src="/OS3-Synergy-default-dashboard/icons/drag-handle-icon.png"
                     alt="Drag"
                     width={20}
                     height={20}
@@ -831,7 +831,7 @@ export default function Dashboard() {
                   onClick={() => toggleWidgetSize("tasks")}
                 >
                   <Image
-                    src="/icons/expand-icon.png"
+                    src="/OS3-Synergy-default-dashboard/icons/expand-icon.png"
                     alt="Expand"
                     width={20}
                     height={20}
@@ -984,7 +984,7 @@ export default function Dashboard() {
                   onDragEnd={handleDragEnd}
                 >
                   <Image
-                    src="/icons/drag-handle-icon.png"
+                    src="/OS3-Synergy-default-dashboard/icons/drag-handle-icon.png"
                     alt="Drag"
                     width={20}
                     height={20}
@@ -997,7 +997,7 @@ export default function Dashboard() {
                   onClick={() => toggleWidgetSize("help")}
                 >
                   <Image
-                    src="/icons/expand-icon.png"
+                    src="/OS3-Synergy-default-dashboard/icons/expand-icon.png"
                     alt="Expand"
                     width={20}
                     height={20}
@@ -1041,7 +1041,7 @@ export default function Dashboard() {
                       </p>
                     </div>
                     <Image
-                      src="/icons/external-link-icon.png"
+                      src="/OS3-Synergy-default-dashboard/icons/external-link-icon.png"
                       alt="External link"
                       width={widgetSizes.help === "half" ? 14 : 18}
                       height={widgetSizes.help === "half" ? 14 : 18}
@@ -1075,7 +1075,7 @@ export default function Dashboard() {
                       </p>
                     </div>
                     <Image
-                      src="/icons/external-link-icon.png"
+                      src="/OS3-Synergy-default-dashboard/icons/external-link-icon.png"
                       alt="External link"
                       width={widgetSizes.help === "half" ? 14 : 18}
                       height={widgetSizes.help === "half" ? 14 : 18}
@@ -1129,7 +1129,7 @@ export default function Dashboard() {
                   onDragEnd={handleDragEnd}
                 >
                   <Image
-                    src="/icons/drag-handle-icon.png"
+                    src="/OS3-Synergy-default-dashboard/icons/drag-handle-icon.png"
                     alt="Drag"
                     width={20}
                     height={20}
@@ -1142,7 +1142,7 @@ export default function Dashboard() {
                   onClick={() => toggleWidgetSize("activity")}
                 >
                   <Image
-                    src="/icons/expand-icon.png"
+                    src="/OS3-Synergy-default-dashboard/icons/expand-icon.png"
                     alt="Expand"
                     width={20}
                     height={20}
@@ -1190,7 +1190,7 @@ export default function Dashboard() {
                       </div>
                     </div>
                     <Image
-                      src="/icons/external-link-icon.png"
+                      src="/OS3-Synergy-default-dashboard/icons/external-link-icon.png"
                       alt="External link"
                       width={widgetSizes.activity === "half" ? 14 : 18}
                       height={widgetSizes.activity === "half" ? 14 : 18}
@@ -1228,7 +1228,7 @@ export default function Dashboard() {
                       </div>
                     </div>
                     <Image
-                      src="/icons/external-link-icon.png"
+                      src="/OS3-Synergy-default-dashboard/icons/external-link-icon.png"
                       alt="External link"
                       width={widgetSizes.activity === "half" ? 14 : 18}
                       height={widgetSizes.activity === "half" ? 14 : 18}
@@ -1266,7 +1266,7 @@ export default function Dashboard() {
                       </div>
                     </div>
                     <Image
-                      src="/icons/external-link-icon.png"
+                      src="/OS3-Synergy-default-dashboard/icons/external-link-icon.png"
                       alt="External link"
                       width={widgetSizes.activity === "half" ? 14 : 18}
                       height={widgetSizes.activity === "half" ? 14 : 18}
@@ -1304,7 +1304,7 @@ export default function Dashboard() {
                       </div>
                     </div>
                     <Image
-                      src="/icons/external-link-icon.png"
+                      src="/OS3-Synergy-default-dashboard/icons/external-link-icon.png"
                       alt="External link"
                       width={widgetSizes.activity === "half" ? 14 : 18}
                       height={widgetSizes.activity === "half" ? 14 : 18}
@@ -1331,7 +1331,7 @@ export default function Dashboard() {
                           </div>
                         </div>
                         <Image
-                          src="/icons/external-link-icon.png"
+                          src="/OS3-Synergy-default-dashboard/icons/external-link-icon.png"
                           alt="External link"
                           width={18}
                           height={18}
@@ -1356,7 +1356,7 @@ export default function Dashboard() {
                           </div>
                         </div>
                         <Image
-                          src="/icons/external-link-icon.png"
+                          src="/OS3-Synergy-default-dashboard/icons/external-link-icon.png"
                           alt="External link"
                           width={18}
                           height={18}
@@ -1395,7 +1395,7 @@ export default function Dashboard() {
                   onDragEnd={handleDragEnd}
                 >
                   <Image
-                    src="/icons/drag-handle-icon.png"
+                    src="/OS3-Synergy-default-dashboard/icons/drag-handle-icon.png"
                     alt="Drag"
                     width={20}
                     height={20}
@@ -1408,7 +1408,7 @@ export default function Dashboard() {
                   onClick={() => toggleWidgetSize("system-monitoring")}
                 >
                   <Image
-                    src="/icons/expand-icon.png"
+                    src="/OS3-Synergy-default-dashboard/icons/expand-icon.png"
                     alt="Expand"
                     width={20}
                     height={20}
@@ -1420,7 +1420,7 @@ export default function Dashboard() {
                   className="px-0 hover:bg-gray-100 hover:scale-105 transition-all duration-200 cursor-pointer"
                 >
                   <Image
-                    src="/icons/menu-dots-icon.png"
+                    src="/OS3-Synergy-default-dashboard/icons/menu-dots-icon.png"
                     alt="Menu"
                     width={20}
                     height={20}
@@ -1633,7 +1633,7 @@ export default function Dashboard() {
                   onDragEnd={handleDragEnd}
                 >
                   <Image
-                    src="/icons/drag-handle-icon.png"
+                    src="/OS3-Synergy-default-dashboard/icons/drag-handle-icon.png"
                     alt="Drag"
                     width={20}
                     height={20}
@@ -1646,7 +1646,7 @@ export default function Dashboard() {
                   onClick={() => toggleWidgetSize("user-management")}
                 >
                   <Image
-                    src="/icons/expand-icon.png"
+                    src="/OS3-Synergy-default-dashboard/icons/expand-icon.png"
                     alt="Expand"
                     width={20}
                     height={20}
@@ -1658,7 +1658,7 @@ export default function Dashboard() {
                   className="px-0 hover:bg-gray-100 hover:scale-105 transition-all duration-200 cursor-pointer"
                 >
                   <Image
-                    src="/icons/menu-dots-icon.png"
+                    src="/OS3-Synergy-default-dashboard/icons/menu-dots-icon.png"
                     alt="Menu"
                     width={20}
                     height={20}
@@ -1939,7 +1939,7 @@ export default function Dashboard() {
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
             <Image
-              src="/icons/thomson-reuters-official-logo.png"
+              src="/OS3-Synergy-default-dashboard/icons/thomson-reuters-official-logo.png"
               alt="Thomson Reuters Logo"
               width={140}
               height={36}
@@ -1949,14 +1949,14 @@ export default function Dashboard() {
         </div>
         <div className="flex items-center gap-4">
           <Image
-            src="/icons/search-icon.png"
+            src="/OS3-Synergy-default-dashboard/icons/search-icon.png"
             alt="Search"
             width={24}
             height={24}
             className="cursor-pointer w-3.5"
           />
           <Image
-            src="/icons/cocounsel-header-icon.png"
+            src="/OS3-Synergy-default-dashboard/icons/cocounsel-header-icon.png"
             alt="coCounsel"
             width={24}
             height={24}
@@ -1967,7 +1967,7 @@ export default function Dashboard() {
             }}
           />
           <Image
-            src="/icons/notification-icon.png"
+            src="/OS3-Synergy-default-dashboard/icons/notification-icon.png"
             alt="Notifications"
             width={24}
             height={24}
@@ -1975,7 +1975,7 @@ export default function Dashboard() {
             onClick={() => setNotificationsOpen(!notificationsOpen)}
           />
           <Image
-            src="/icons/user-profile-icon.png"
+            src="/OS3-Synergy-default-dashboard/icons/user-profile-icon.png"
             alt="Profile"
             width={24}
             height={24}
@@ -2000,7 +2000,7 @@ export default function Dashboard() {
               onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
             >
               <Image
-                src="/icons/back-arrow-icon.png"
+                src="/OS3-Synergy-default-dashboard/icons/back-arrow-icon.png"
                 alt="Toggle Sidebar"
                 width={20}
                 height={20}
@@ -2010,7 +2010,7 @@ export default function Dashboard() {
             <nav className="space-y-1">
               <div className="flex items-center gap-2 px-3 py-2 bg-[#EDF2F0] border-2 border-[#1D4B34] rounded min-h-[40px]">
                 <Image
-                  src="/icons/dashboard-grid-icon.png"
+                  src="/OS3-Synergy-default-dashboard/icons/dashboard-grid-icon.png"
                   alt="Dashboard"
                   width={20}
                   height={20}
@@ -2023,7 +2023,7 @@ export default function Dashboard() {
               <Link href="/applications" className="block">
                 <div className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-[#EDF2F0] hover:border-2 hover:border-[#1D4B34] hover:text-[#1D4B34] rounded-md cursor-pointer transition-all duration-200">
                   <Image
-                    src="/icons/menu-grid-icon.png"
+                    src="/OS3-Synergy-default-dashboard/icons/menu-grid-icon.png"
                     alt="Applications"
                     width={20}
                     height={20}
@@ -2039,7 +2039,7 @@ export default function Dashboard() {
               <Link href="/system-status" className="block">
                 <div className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-[#EDF2F0] hover:border-2 hover:border-[#1D4B34] hover:text-[#1D4B34] rounded-md cursor-pointer transition-all duration-200">
                   <Image
-                    src="/icons/warning-triangle-icon.png"
+                    src="/OS3-Synergy-default-dashboard/icons/warning-triangle-icon.png"
                     alt="System Status"
                     width={20}
                     height={20}
@@ -2142,7 +2142,7 @@ export default function Dashboard() {
             <div className="flex items-center justify-between p-3 border-b border-gray-200 bg-gray-50 rounded-t-lg h-auto">
               <div className="flex items-center gap-2">
                 <Image
-                  src="/icons/cocounsel-logo.png"
+                  src="/OS3-Synergy-default-dashboard/icons/cocounsel-logo.png"
                   alt="CoCounsel"
                   width={16}
                   height={16}
@@ -2159,7 +2159,7 @@ export default function Dashboard() {
                   onClick={() => setCocounselMinimized(true)}
                 >
                   <Image
-                    src="/icons/cocounsel-minimize.png"
+                    src="/OS3-Synergy-default-dashboard/icons/cocounsel-minimize.png"
                     alt="Minimize"
                     width={36}
                     height={36}
@@ -2171,7 +2171,7 @@ export default function Dashboard() {
                   className="p-1 h-6 hover:bg-gray-200 w-8 cursor-pointer"
                 >
                   <Image
-                    src="/icons/cocounsel-expand.png"
+                    src="/OS3-Synergy-default-dashboard/icons/cocounsel-expand.png"
                     alt="Expand"
                     width={36}
                     height={36}
@@ -2183,7 +2183,7 @@ export default function Dashboard() {
                   className="p-1 h-6 hover:bg-gray-200 w-8 cursor-pointer"
                 >
                   <Image
-                    src="/icons/cocounsel-menu.png"
+                    src="/OS3-Synergy-default-dashboard/icons/cocounsel-menu.png"
                     alt="Menu"
                     width={36}
                     height={36}
@@ -2201,7 +2201,7 @@ export default function Dashboard() {
                 <Image
                   width="16"
                   height="16"
-                  src="/icons/cocounsel-new-chat.png"
+                  src="/OS3-Synergy-default-dashboard/icons/cocounsel-new-chat.png"
                   alt="New chat"
                   className="text-gray-500"
                 />
@@ -2214,7 +2214,7 @@ export default function Dashboard() {
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
                   <Image
-                    src="/icons/cocounsel-avatar.png"
+                    src="/OS3-Synergy-default-dashboard/icons/cocounsel-avatar.png"
                     alt="CoCounsel Avatar"
                     width={28}
                     height={28}
@@ -2256,7 +2256,7 @@ export default function Dashboard() {
           <div className="fixed bottom-4 right-4 bg-white border border-gray-300 rounded-lg shadow-xl z-50 p-3">
             <div className="flex items-center gap-2">
               <Image
-                src="/icons/cocounsel-logo.png"
+                src="/OS3-Synergy-default-dashboard/icons/cocounsel-logo.png"
                 alt="CoCounsel"
                 width={16}
                 height={16}
@@ -2271,7 +2271,7 @@ export default function Dashboard() {
                 onClick={() => setCocounselMinimized(false)}
               >
                 <Image
-                  src="/icons/cocounsel-expand.png"
+                  src="/OS3-Synergy-default-dashboard/icons/cocounsel-expand.png"
                   alt="Expand"
                   width={16}
                   height={16}

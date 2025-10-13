@@ -128,7 +128,7 @@ export default function SystemStatus() {
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
             <Image
-              src="/icons/thomson-reuters-official-logo.png"
+              src="/OS3-Synergy-default-dashboard/icons/thomson-reuters-official-logo.png"
               alt="Thomson Reuters Logo"
               width={140}
               height={36}
@@ -138,21 +138,21 @@ export default function SystemStatus() {
         </div>
         <div className="flex items-center gap-4">
           <Image
-            src="/icons/search-icon.png"
+            src="/OS3-Synergy-default-dashboard/icons/search-icon.png"
             alt="Search"
             width={24}
             height={24}
             className="cursor-pointer w-3.5"
           />
           <Image
-            src="/icons/cocounsel-header-icon.png"
+            src="/OS3-Synergy-default-dashboard/icons/cocounsel-header-icon.png"
             alt="coCounsel"
             width={24}
             height={24}
             className="cursor-pointer w-3.5"
           />
           <Image
-            src="/icons/notification-icon.png"
+            src="/OS3-Synergy-default-dashboard/icons/notification-icon.png"
             alt="Notifications"
             width={24}
             height={24}
@@ -160,7 +160,7 @@ export default function SystemStatus() {
             onClick={() => setNotificationsOpen(!notificationsOpen)}
           />
           <Image
-            src="/icons/user-profile-icon.png"
+            src="/OS3-Synergy-default-dashboard/icons/user-profile-icon.png"
             alt="Profile"
             width={24}
             height={24}
@@ -184,7 +184,7 @@ export default function SystemStatus() {
               onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
             >
               <Image
-                src="/icons/back-arrow-icon.png"
+                src="/OS3-Synergy-default-dashboard/icons/back-arrow-icon.png"
                 alt="Toggle Sidebar"
                 width={20}
                 height={20}
@@ -195,7 +195,7 @@ export default function SystemStatus() {
               <Link href="/" className="block">
                 <div className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-[#EDF2F0] hover:border-2 hover:border-[#1D4B34] hover:text-[#1D4B34] rounded-md cursor-pointer transition-all duration-200">
                   <Image
-                    src="/icons/dashboard-grid-icon.png"
+                    src="/OS3-Synergy-default-dashboard/icons/dashboard-grid-icon.png"
                     alt="Dashboard"
                     width={20}
                     height={20}
@@ -206,7 +206,7 @@ export default function SystemStatus() {
               <Link href="/applications" className="block">
                 <div className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-[#EDF2F0] hover:border-2 hover:border-[#1D4B34] hover:text-[#1D4B34] rounded-md cursor-pointer transition-all duration-200">
                   <Image
-                    src="/icons/menu-grid-icon.png"
+                    src="/OS3-Synergy-default-dashboard/icons/menu-grid-icon.png"
                     alt="Applications"
                     width={20}
                     height={20}
@@ -216,7 +216,7 @@ export default function SystemStatus() {
                     <>
                       <span>My applications</span>
                       <Image
-                        src="/icons/chevron-right-icon.png"
+                        src="/OS3-Synergy-default-dashboard/icons/chevron-right-icon.png"
                         alt="Expand"
                         width={16}
                         height={16}
@@ -228,7 +228,7 @@ export default function SystemStatus() {
               </Link>
               <div className="flex items-center gap-3 px-3 py-2 bg-white border-2 border-orange-500 rounded-md shadow-sm">
                 <Image
-                  src="/icons/warning-triangle-icon.png"
+                  src="/OS3-Synergy-default-dashboard/icons/warning-triangle-icon.png"
                   alt="System Status"
                   width={20}
                   height={20}
