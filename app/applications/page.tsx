@@ -1,13 +1,13 @@
-"use client";
+"use client"
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import Image from "next/image";
-import Link from "next/link"; // Added Link import for navigation
-import { useState } from "react";
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import Image from "next/image"
+import Link from "next/link" // Added Link import for navigation
+import { useState } from "react"
 
 export default function MyApplications() {
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
 
   const applications = [
     { name: "Administration", description: "System administration" },
@@ -29,75 +29,77 @@ export default function MyApplications() {
     { name: "My Work", description: "Personal workspace" },
     { name: "Notification Rules", description: "Alert management" },
     { name: "Global Access", description: "Global system access" },
-    {
-      name: "Tax Provision Administration",
-      description: "Tax provision admin",
-    },
+    { name: "Tax Provision Administration", description: "Tax provision admin" },
     { name: "State Apportionment", description: "State tax allocation" },
     { name: "Statutory Reporting", description: "Compliance reporting" },
     { name: "Tax Provision", description: "Tax provisioning" },
     { name: "Uncertain Tax Positions", description: "UTP management" },
-    {
-      name: "University - Training & Certifications",
-      description: "Learning platform",
-    },
+    { name: "University - Training & Certifications", description: "Learning platform" },
     { name: "WorkFlow Manager", description: "Workflow management" },
     { name: "Workpapers", description: "Working papers" },
-  ];
+  ]
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-[#123021] text-white px-6 py-2 flex items-center justify-between h-14">
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
+      <header className="bg-[#123021] text-white px-8 py-2 flex items-center justify-between h-14">
+        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-6">
             <Image
-              src="/OS3-Synergy-default-dashboard/icons/thomson-reuters-official-logo.png"
+              src="/icons/thomson-reuters-official-logo.svg"
               alt="Thomson Reuters Logo"
-              width={140}
-              height={36}
+              width={194}
+              height={26}
               className="object-contain"
             />
+            <span className="font-bold text-lg tracking-tight">ONESOURCE</span>
           </div>
         </div>
-        <div className="flex items-center gap-4">
-          <Image
-            src="/OS3-Synergy-default-dashboard/icons/search-icon.png"
-            alt="Search"
-            width={24}
-            height={24}
-            className="cursor-pointer w-3.5"
-          />
-          <Image
-            src="/OS3-Synergy-default-dashboard/icons/cocounsel-header-icon.png"
-            alt="coCounsel"
-            width={24}
-            height={24}
-            className="cursor-pointer w-3.5"
-          />
-          <Image
-            src="/OS3-Synergy-default-dashboard/icons/notification-icon.png"
-            alt="Notifications"
-            width={24}
-            height={24}
-            className="cursor-pointer w-3.5"
-          />
-          <Image
-            src="/OS3-Synergy-default-dashboard/icons/user-profile-icon.png"
-            alt="Profile"
-            width={24}
-            height={24}
-            className="cursor-pointer w-3.5"
-          />
+        <div className="flex items-center gap-1">
+          <div className="relative group w-10 h-10 flex items-center justify-center">
+            <Image src="/icons/search-icon.svg" alt="Search" width={16} height={16} className="cursor-pointer" />
+            <span className="absolute top-full left-1/2 -translate-x-1/2 mt-1 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">
+              Search
+            </span>
+          </div>
+          <div className="h-6 w-px bg-white/30 mx-1"></div>
+          <div className="relative group w-10 h-10 flex items-center justify-center">
+            <Image
+              src="/icons/cocounsel-header-icon.svg"
+              alt="coCounsel"
+              width={16}
+              height={16}
+              className="cursor-pointer"
+            />
+            <span className="absolute top-full left-1/2 -translate-x-1/2 mt-1 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">
+              CoCounsel
+            </span>
+          </div>
+          <div className="relative group w-10 h-10 flex items-center justify-center">
+            <Image
+              src="/icons/notification-icon.svg"
+              alt="Notifications"
+              width={16}
+              height={16}
+              className="cursor-pointer"
+            />
+            <span className="absolute top-full left-1/2 -translate-x-1/2 mt-1 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">
+              Notifications
+            </span>
+          </div>
+          <div className="relative group w-10 h-10 flex items-center justify-center">
+            <Image src="/icons/user-profile-icon.svg" alt="Profile" width={16} height={16} className="cursor-pointer" />
+            <span className="absolute top-full left-1/2 -translate-x-1/2 mt-1 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">
+              Account
+            </span>
+          </div>
         </div>
       </header>
 
       <div className="flex">
         {/* Sidebar */}
         <aside
-          className={`${
-            sidebarCollapsed ? "w-16" : "w-60"
-          } bg-gray-100 border-r border-gray-200 min-h-screen transition-all duration-300 ease-in-out`}
+          className={`${sidebarCollapsed ? "w-16" : "w-60"} bg-gray-100 border-r border-gray-200 min-h-screen transition-all duration-300 ease-in-out`}
         >
           <div className="p-3">
             <Button
@@ -106,28 +108,18 @@ export default function MyApplications() {
               className="mb-3 p-0 h-auto hover:bg-gray-200 ml-auto block"
               onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
             >
-              <Image
-                src="/OS3-Synergy-default-dashboard/icons/back-arrow-icon.png"
-                alt="Toggle Sidebar"
-                width={20}
-                height={20}
-              />
+              <Image src="/icons/back-arrow-icon.png" alt="Toggle Sidebar" width={20} height={20} />
             </Button>
 
             <nav className="space-y-1">
               <Link href="/" className="block">
                 <div className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-[#EDF2F0] hover:border-2 hover:border-[#1D4B34] hover:text-[#1D4B34] rounded-md cursor-pointer transition-all duration-200">
-                  <Image
-                    src="/OS3-Synergy-default-dashboard/icons/dashboard-grid-icon.png"
-                    alt="Dashboard"
-                    width={20}
-                    height={20}
-                  />
+                  <Image src="/icons/dashboard-grid-icon.png" alt="Dashboard" width={20} height={20} />
                   {!sidebarCollapsed && (
                     <>
                       <span>Dashboard</span>
                       <Image
-                        src="/OS3-Synergy-default-dashboard/icons/chevron-right-icon.png"
+                        src="/icons/chevron-right-icon.png"
                         alt="Expand"
                         width={16}
                         height={16}
@@ -138,33 +130,19 @@ export default function MyApplications() {
                 </div>
               </Link>
 
-              <div className="flex items-center gap-3 px-3 py-2 bg-white border-2 border-orange-500 rounded-md shadow-sm">
-                <Image
-                  src="/OS3-Synergy-default-dashboard/icons/menu-grid-icon.png"
-                  alt="Applications"
-                  width={20}
-                  height={20}
-                />
-                {!sidebarCollapsed && (
-                  <span className="font-medium text-gray-900">
-                    My applications
-                  </span>
-                )}
+              <div className="flex items-center gap-3 px-3 py-2 bg-[#EDF2F0] border-2 border-[#1D4B34] rounded-md shadow-sm">
+                <Image src="/icons/menu-grid-icon.png" alt="Applications" width={20} height={20} />
+                {!sidebarCollapsed && <span className="font-medium text-gray-900">My applications</span>}
               </div>
 
               <Link href="/system-status" className="block">
                 <div className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-[#EDF2F0] hover:border-2 hover:border-[#1D4B34] hover:text-[#1D4B34] rounded-md cursor-pointer transition-all duration-200">
-                  <Image
-                    src="/OS3-Synergy-default-dashboard/icons/warning-triangle-icon.png"
-                    alt="System Status"
-                    width={20}
-                    height={20}
-                  />
+                  <Image src="/icons/warning-triangle-icon.png" alt="System Status" width={20} height={20} />
                   {!sidebarCollapsed && (
                     <>
-                      <span>System Status</span>
+                      <span>System status</span>
                       <Image
-                        src="/OS3-Synergy-default-dashboard/icons/chevron-right-icon.png"
+                        src="/icons/chevron-right-icon.png"
                         alt="Expand"
                         width={16}
                         height={16}
@@ -180,9 +158,7 @@ export default function MyApplications() {
 
         {/* Main Content */}
         <main className="flex-1 p-6">
-          <h1 className="text-2xl font-semibold text-gray-900 mb-6">
-            My Applications
-          </h1>
+          <h1 className="text-2xl font-semibold text-gray-900 mb-6">My applications</h1>
 
           <div className="grid grid-cols-4 gap-6">
             {applications.map((app, index) => (
@@ -196,12 +172,10 @@ export default function MyApplications() {
                       <h3 className="font-semibold text-gray-900 hover:text-[#1D4B34] text-base mb-2 transition-colors">
                         {app.name}
                       </h3>
-                      <p className="text-sm text-gray-600 hover:text-[#1D4B34] transition-colors">
-                        {app.description}
-                      </p>
+                      <p className="text-sm text-gray-600 hover:text-[#1D4B34] transition-colors">{app.description}</p>
                     </div>
                     <Image
-                      src="/OS3-Synergy-default-dashboard/icons/external-link-icon.png"
+                      src="/icons/external-link-icon.png"
                       alt="External link"
                       width={20}
                       height={20}
@@ -215,5 +189,5 @@ export default function MyApplications() {
         </main>
       </div>
     </div>
-  );
+  )
 }
