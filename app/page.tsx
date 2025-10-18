@@ -1803,7 +1803,7 @@ export default function Dashboard() {
                 Customize view
               </Button>
               <Button
-                className="bg-[#123021] hover:bg-[#EDF2F0] hover:border-[#1D4B34] hover:border-2 hover:text-[#1D4B34] border-2 border-[#123021] shadow-sm rounded flex items-center gap-2 min-h-[40px] cursor-pointer"
+                className="bg-[#123021] text-white hover:bg-[#EDF2F0] hover:border-[#1D4B34] hover:border-2 hover:text-[#1D4B34] border-2 border-[#123021] shadow-sm rounded flex items-center gap-2 min-h-[40px] cursor-pointer"
                 style={{ boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.16)" }}
                 onClick={handleImportOpen}
               >
