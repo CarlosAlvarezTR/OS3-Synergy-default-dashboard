@@ -25,11 +25,13 @@ import {
   MessageSquare,
 } from "lucide-react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { SparkleIcon } from "@/components/ui/sparkle-icon"
 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
 export default function Dashboard() {
+  const router = useRouter()
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [cocounselOpen, setCocounselOpen] = useState(false)
   const [cocounselMinimized, setCocounselMinimized] = useState(false)
@@ -244,6 +246,38 @@ export default function Dashboard() {
   }
 
   const applications = ["All applications", ...myApplications.map((app) => app.name)]
+
+  // Function to handle CoCounsel activation with URL tracking
+  const handleCocounselActivation = () => {
+    setCocounselOpen(true)
+    setCocounselMinimized(false)
+    
+    // Add #cocounsel to the URL
+    const url = new URL(window.location.href)
+    url.hash = 'cocounsel'
+    router.push(url.pathname + url.search + url.hash, { scroll: false })
+  }
+
+  // Function to handle CoCounsel deactivation and remove URL hash
+  const handleCocounselDeactivation = () => {
+    setCocounselOpen(false)
+    setCocounselMinimized(false)
+    
+    // Remove hash from URL
+    const url = new URL(window.location.href)
+    url.hash = ''
+    router.push(url.pathname + url.search, { scroll: false })
+  }
+
+  // Function to handle CoCounsel minimization and remove URL hash
+  const handleCocounselMinimize = () => {
+    setCocounselMinimized(true)
+    
+    // Remove hash from URL
+    const url = new URL(window.location.href)
+    url.hash = ''
+    router.push(url.pathname + url.search, { scroll: false })
+  }
 
   const accountDropdownRef = useRef<HTMLDivElement>(null)
   const applicationsMenuRef = useRef<HTMLDivElement>(null)
@@ -991,10 +1025,7 @@ export default function Dashboard() {
                 <Button
                   className={`bg-[#123021] hover:bg-[#EDF2F0] hover:border-[#1D4B34] hover:border-2 hover:text-[#1D4B34] border border-[#123021] shadow-sm rounded text-white flex items-center gap-2 cursor-pointer ${widgetSizes.help === "half" ? "text-xs px-3 py-1.5" : "text-sm px-4 py-2"}`}
                   style={{ boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.16)" }}
-                  onClick={() => {
-                    setCocounselOpen(true)
-                    setCocounselMinimized(false)
-                  }}
+                  onClick={handleCocounselActivation}
                 >
                   <SparkleIcon className="w-5 h-5" />
                   Ask CoCounsel
@@ -1707,10 +1738,7 @@ export default function Dashboard() {
               width={16}
               height={16}
               className="cursor-pointer"
-              onClick={() => {
-                setCocounselOpen(!cocounselOpen)
-                setCocounselMinimized(false)
-              }}
+              onClick={handleCocounselActivation}
             />
             <span className="absolute top-full left-1/2 -translate-x-1/2 mt-1 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">
               CoCounsel
@@ -1874,7 +1902,7 @@ export default function Dashboard() {
                   variant="ghost"
                   size="sm"
                   className="p-1 h-6 hover:bg-gray-200 w-[32px ] cursor-pointer"
-                  onClick={() => setCocounselMinimized(true)}
+                  onClick={handleCocounselMinimize}
                 >
                   <Image src="/OS3-Synergy-default-dashboard/icons/cocounsel-minimize.png" alt="Minimize" width={36} height={36} />
                 </Button>
@@ -1957,7 +1985,7 @@ export default function Dashboard() {
                 variant="ghost"
                 size="sm"
                 className="p-1 h-6 w-6 hover:bg-gray-200 ml-2 cursor-pointer"
-                onClick={() => setCocounselMinimized(false)}
+                onClick={handleCocounselActivation}
               >
                 <Image src="/OS3-Synergy-default-dashboard/icons/cocounsel-expand.png" alt="Expand" width={16} height={16} />
               </Button>
@@ -1965,7 +1993,7 @@ export default function Dashboard() {
                 variant="ghost"
                 size="sm"
                 className="p-1 h-6 w-6 hover:bg-gray-200"
-                onClick={() => setCocounselOpen(false)}
+                onClick={handleCocounselDeactivation}
               >
                 <span className="text-gray-500 text-sm">×</span>
               </Button>

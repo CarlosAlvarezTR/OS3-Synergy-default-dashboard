@@ -4,10 +4,20 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import Image from "next/image"
 import Link from "next/link" // Added Link import for navigation
+import { useRouter } from "next/navigation"
 import { useState } from "react"
 
 export default function MyApplications() {
+  const router = useRouter()
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+
+  // Function to handle CoCounsel activation with URL tracking
+  const handleCocounselActivation = () => {
+    // Add #cocounsel to the URL
+    const url = new URL(window.location.href)
+    url.hash = 'cocounsel'
+    router.push(url.pathname + url.search + url.hash, { scroll: false })
+  }
 
   const applications = [
     { name: "Administration", description: "System administration" },
@@ -70,6 +80,7 @@ export default function MyApplications() {
               width={16}
               height={16}
               className="cursor-pointer"
+              onClick={handleCocounselActivation}
             />
             <span className="absolute top-full left-1/2 -translate-x-1/2 mt-1 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">
               CoCounsel
