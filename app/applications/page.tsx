@@ -13,10 +13,10 @@ export default function MyApplications() {
 
   // Function to handle CoCounsel activation with URL tracking
   const handleCocounselActivation = () => {
-    // Add #cocounsel to the URL
-    const url = new URL(window.location.href)
-    url.hash = 'cocounsel'
-    router.push(url.pathname + url.search + url.hash, { scroll: false })
+    // Add #cocounsel to the URL - use relative path from basePath
+    const currentPath = window.location.pathname.replace('/OS3-Synergy-default-dashboard', '') || '/'
+    const search = window.location.search
+    router.push(currentPath + search + '#cocounsel', { scroll: false })
   }
 
   const applications = [

@@ -252,10 +252,10 @@ export default function Dashboard() {
     setCocounselOpen(true)
     setCocounselMinimized(false)
     
-    // Add #cocounsel to the URL
-    const url = new URL(window.location.href)
-    url.hash = 'cocounsel'
-    router.push(url.pathname + url.search + url.hash, { scroll: false })
+    // Add #cocounsel to the URL - use relative path from basePath
+    const currentPath = window.location.pathname.replace('/OS3-Synergy-default-dashboard', '') || '/'
+    const search = window.location.search
+    router.push(currentPath + search + '#cocounsel', { scroll: false })
   }
 
   // Function to handle CoCounsel deactivation and remove URL hash
@@ -263,20 +263,20 @@ export default function Dashboard() {
     setCocounselOpen(false)
     setCocounselMinimized(false)
     
-    // Remove hash from URL
-    const url = new URL(window.location.href)
-    url.hash = ''
-    router.push(url.pathname + url.search, { scroll: false })
+    // Remove hash from URL - use relative path from basePath
+    const currentPath = window.location.pathname.replace('/OS3-Synergy-default-dashboard', '') || '/'
+    const search = window.location.search
+    router.push(currentPath + search, { scroll: false })
   }
 
   // Function to handle CoCounsel minimization and remove URL hash
   const handleCocounselMinimize = () => {
     setCocounselMinimized(true)
     
-    // Remove hash from URL
-    const url = new URL(window.location.href)
-    url.hash = ''
-    router.push(url.pathname + url.search, { scroll: false })
+    // Remove hash from URL - use relative path from basePath
+    const currentPath = window.location.pathname.replace('/OS3-Synergy-default-dashboard', '') || '/'
+    const search = window.location.search
+    router.push(currentPath + search, { scroll: false })
   }
 
   const accountDropdownRef = useRef<HTMLDivElement>(null)
