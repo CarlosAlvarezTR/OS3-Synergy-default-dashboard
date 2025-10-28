@@ -27,6 +27,8 @@ import {
 import Link from "next/link"
 import { SparkleIcon } from "@/components/ui/sparkle-icon"
 
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+
 export default function Dashboard() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [cocounselOpen, setCocounselOpen] = useState(false)
@@ -41,7 +43,7 @@ export default function Dashboard() {
   const [draggedWidget, setDraggedWidget] = useState<string | null>(null)
   const [dropPosition, setDropPosition] = useState<{
     targetId: string
-    position: "before" | "after" | "left" | "center" | "right"
+    position: "before" | "after" | "left" | "right"
   } | null>(null)
   const [widgetOrder, setWidgetOrder] = useState([
     "applications",
@@ -333,32 +335,24 @@ export default function Dashboard() {
 
     if (draggedWidget && draggedWidget !== widgetId) {
       const rect = e.currentTarget.getBoundingClientRect()
-      const midpointY = rect.top + rect.height / 2
-      const midpointX = rect.left + rect.width / 2
-
-      // Calculate relative position
       const relativeY = e.clientY - rect.top
       const relativeX = e.clientX - rect.left
 
-      // Determine if we're in the edge zones (top/bottom 25% for vertical, left/right 30% for horizontal)
+      // Determine drop position based on cursor location
       const isTopEdge = relativeY < rect.height * 0.25
       const isBottomEdge = relativeY > rect.height * 0.75
-      const isLeftEdge = relativeX < rect.width * 0.3
-      const isRightEdge = relativeX > rect.width * 0.7
+      const isLeftHalf = relativeX < rect.width * 0.5
 
-      let position: "before" | "after" | "left" | "center" | "right"
+      let position: "before" | "after" | "left" | "right"
 
-      // Prioritize vertical positioning (before/after) at edges
+      // Prioritize vertical positioning at edges
       if (isTopEdge) {
         position = "before"
       } else if (isBottomEdge) {
         position = "after"
-      } else if (isLeftEdge) {
-        position = "left"
-      } else if (isRightEdge) {
-        position = "right"
       } else {
-        position = "center"
+        // In the middle vertical area, use horizontal positioning
+        position = isLeftHalf ? "left" : "right"
       }
 
       setDropPosition({ targetId: widgetId, position })
@@ -381,53 +375,36 @@ export default function Dashboard() {
     e.preventDefault()
     if (draggedWidget && draggedWidget !== targetWidgetId && dropPosition) {
       const { position } = dropPosition
+      const newOrder = [...widgetOrder]
+      const newSizes = { ...widgetSizes }
 
-      // Handle horizontal positioning (left, center, right)
-      if (position === "left" || position === "center" || position === "right") {
-        const newOrder = [...widgetOrder]
-        const newSizes = { ...widgetSizes }
+      // Remove dragged widget from current position
+      const draggedIndex = newOrder.indexOf(draggedWidget)
+      newOrder.splice(draggedIndex, 1)
 
-        // Remove dragged widget from current position
-        const draggedIndex = newOrder.indexOf(draggedWidget)
-        newOrder.splice(draggedIndex, 1)
+      // Find target widget index in the new order (after removal)
+      const targetIndex = newOrder.indexOf(targetWidgetId)
 
-        // Find target widget index
-        const targetIndex = newOrder.indexOf(targetWidgetId)
-
+      if (position === "left" || position === "right") {
+        // Side-by-side placement
         if (position === "left") {
-          // Insert before target, set both to half width
           newOrder.splice(targetIndex, 0, draggedWidget)
-          newSizes[draggedWidget] = "half"
-          newSizes[targetWidgetId] = "half"
-        } else if (position === "right") {
-          // Insert after target, set both to half width
+        } else {
           newOrder.splice(targetIndex + 1, 0, draggedWidget)
-          newSizes[draggedWidget] = "half"
-          newSizes[targetWidgetId] = "half"
-        } else if (position === "center") {
-          // Replace target position, set dragged to full width
-          newOrder.splice(targetIndex, 0, draggedWidget)
-          newSizes[draggedWidget] = "full"
         }
-
-        setWidgetOrder(newOrder)
-        setWidgetSizes(newSizes)
+        // Set both widgets to half width
+        newSizes[draggedWidget] = "half"
+        newSizes[targetWidgetId] = "half"
       } else {
-        // Handle vertical positioning (before/after) - existing logic
-        const newOrder = [...widgetOrder]
-        const draggedIndex = newOrder.indexOf(draggedWidget)
-        const targetIndex = newOrder.indexOf(targetWidgetId)
-
-        // Remove dragged item
-        newOrder.splice(draggedIndex, 1)
-
-        // Insert at the correct position
+        // Vertical placement (before/after)
         const insertIndex = position === "before" ? targetIndex : targetIndex + 1
-        const adjustedIndex = draggedIndex < targetIndex ? insertIndex - 1 : insertIndex
-        newOrder.splice(adjustedIndex, 0, draggedWidget)
-
-        setWidgetOrder(newOrder)
+        newOrder.splice(insertIndex, 0, draggedWidget)
+        // Set dragged widget to full width when placed vertically
+        newSizes[draggedWidget] = "full"
       }
+
+      setWidgetOrder(newOrder)
+      setWidgetSizes(newSizes)
     }
     setDraggedWidget(null)
     setDropPosition(null)
@@ -550,7 +527,6 @@ export default function Dashboard() {
     const showDropBefore = dropPosition?.targetId === widgetId && dropPosition.position === "before"
     const showDropAfter = dropPosition?.targetId === widgetId && dropPosition.position === "after"
     const showDropLeft = dropPosition?.targetId === widgetId && dropPosition.position === "left"
-    const showDropCenter = dropPosition?.targetId === widgetId && dropPosition.position === "center"
     const showDropRight = dropPosition?.targetId === widgetId && dropPosition.position === "right"
 
     const baseClasses = `transition-all duration-200 ${isDraggingWidget ? "opacity-50 scale-95" : ""}`
@@ -571,16 +547,20 @@ export default function Dashboard() {
             onDrop={(e) => handleDrop(e, "applications")}
           >
             {showDropBefore && (
-              <div className="h-1 bg-blue-500 rounded-full mb-2 shadow-lg absolute -top-2 left-0 right-0"></div>
+              <div className="absolute -top-4 left-0 right-0 h-2 flex items-center justify-center z-20">
+                <div className="w-full h-1 bg-blue-500 rounded-full shadow-lg"></div>
+              </div>
+            )}
+            {showDropAfter && (
+              <div className="absolute -bottom-4 left-0 right-0 h-2 flex items-center justify-center z-20">
+                <div className="w-full h-1 bg-blue-500 rounded-full shadow-lg"></div>
+              </div>
             )}
             {showDropLeft && (
-              <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-500 rounded-full shadow-lg"></div>
-            )}
-            {showDropCenter && (
-              <div className="absolute inset-0 border-2 border-blue-500 rounded-lg shadow-lg pointer-events-none"></div>
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-16 bg-blue-500 rounded-r-full shadow-lg z-20"></div>
             )}
             {showDropRight && (
-              <div className="absolute right-0 top-0 bottom-0 w-1 bg-blue-500 rounded-full shadow-lg"></div>
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-16 bg-blue-500 rounded-l-full shadow-lg z-20"></div>
             )}
 
             <CardHeader className="flex flex-row items-center justify-between pb-1 gap-0 mb-3">
@@ -594,7 +574,7 @@ export default function Dashboard() {
                   onDragStart={(e) => handleDragStart(e, "applications")}
                   onDragEnd={handleDragEnd}
                 >
-                  <Image src="/OS3-Synergy-default-dashboard/icons/saf-button-icon_drag.svg" alt="Drag" width={16} height={16} />
+                  <Image src="/icons/saf-button-icon_drag.svg" alt="Drag" width={16} height={16} />
                 </Button>
                 <Button
                   variant="ghost"
@@ -602,7 +582,7 @@ export default function Dashboard() {
                   className="px-0 hover:bg-gray-100 hover:scale-105 transition-all duration-200 cursor-pointer"
                   onClick={() => toggleWidgetSize("applications")}
                 >
-                  <Image src="/OS3-Synergy-default-dashboard/icons/expand-icon.png" alt="Expand" width={20} height={20} />
+                  <Image src="/icons/expand-icon.png" alt="Expand" width={20} height={20} />
                 </Button>
                 <div className="relative" ref={applicationsMenuRef}>
                   <Button
@@ -611,7 +591,7 @@ export default function Dashboard() {
                     className="px-0 hover:bg-gray-100 hover:scale-105 transition-all duration-200 cursor-pointer"
                     onClick={() => setApplicationsMenuOpen(!applicationsMenuOpen)}
                   >
-                    <Image src="/OS3-Synergy-default-dashboard/icons/menu-dots-icon.png" alt="Menu" width={20} height={20} />
+                    <Image src="/icons/menu-dots-icon.png" alt="Menu" width={20} height={20} />
                   </Button>
 
                   {applicationsMenuOpen && (
@@ -739,22 +719,26 @@ export default function Dashboard() {
         return (
           <Card
             key="tasks"
-            className={`mb-4 leading-7 flex-col gap-0 ${baseClasses} ${heightClasses} relative`}
+            className={`mb-4 leading-7 gap-0 ${baseClasses} ${heightClasses} relative`}
             onDragOver={(e) => handleDragOver(e, "tasks")}
             onDragLeave={handleDragLeave}
             onDrop={(e) => handleDrop(e, "tasks")}
           >
             {showDropBefore && (
-              <div className="h-1 bg-blue-500 rounded-full mb-2 shadow-lg absolute -top-2 left-0 right-0"></div>
+              <div className="absolute -top-4 left-0 right-0 h-2 flex items-center justify-center z-20">
+                <div className="w-full h-1 bg-blue-500 rounded-full shadow-lg"></div>
+              </div>
+            )}
+            {showDropAfter && (
+              <div className="absolute -bottom-4 left-0 right-0 h-2 flex items-center justify-center z-20">
+                <div className="w-full h-1 bg-blue-500 rounded-full shadow-lg"></div>
+              </div>
             )}
             {showDropLeft && (
-              <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-500 rounded-full shadow-lg"></div>
-            )}
-            {showDropCenter && (
-              <div className="absolute inset-0 border-2 border-blue-500 rounded-lg shadow-lg pointer-events-none"></div>
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-16 bg-blue-500 rounded-r-full shadow-lg z-20"></div>
             )}
             {showDropRight && (
-              <div className="absolute right-0 top-0 bottom-0 w-1 bg-blue-500 rounded-full shadow-lg"></div>
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-16 bg-blue-500 rounded-l-full shadow-lg z-20"></div>
             )}
 
             <CardHeader className="flex flex-row items-center justify-between pb-1 gap-0 mb-3">
@@ -776,7 +760,7 @@ export default function Dashboard() {
                   onDragStart={(e) => handleDragStart(e, "tasks")}
                   onDragEnd={handleDragEnd}
                 >
-                  <Image src="/OS3-Synergy-default-dashboard/icons/saf-button-icon_drag.svg" alt="Drag" width={16} height={16} />
+                  <Image src="/icons/saf-button-icon_drag.svg" alt="Drag" width={16} height={16} />
                 </Button>
                 <Button
                   variant="ghost"
@@ -784,7 +768,7 @@ export default function Dashboard() {
                   className="px-0 hover:bg-gray-100 hover:scale-105 transition-all duration-200 cursor-pointer"
                   onClick={() => toggleWidgetSize("tasks")}
                 >
-                  <Image src="/OS3-Synergy-default-dashboard/icons/expand-icon.png" alt="Expand" width={20} height={20} />
+                  <Image src="/icons/expand-icon.png" alt="Expand" width={20} height={20} />
                 </Button>
                 <Button
                   variant="ghost"
@@ -886,22 +870,26 @@ export default function Dashboard() {
         return (
           <Card
             key="help"
-            className={`gap-0 ${baseClasses} ${heightClasses} relative`}
+            className={`mb-4 leading-7 gap-0 ${baseClasses} ${heightClasses} relative`}
             onDragOver={(e) => handleDragOver(e, "help")}
             onDragLeave={handleDragLeave}
             onDrop={(e) => handleDrop(e, "help")}
           >
             {showDropBefore && (
-              <div className="h-1 bg-blue-500 rounded-full mb-2 shadow-lg absolute -top-2 left-0 right-0"></div>
+              <div className="absolute -top-4 left-0 right-0 h-2 flex items-center justify-center z-20">
+                <div className="w-full h-1 bg-blue-500 rounded-full shadow-lg"></div>
+              </div>
+            )}
+            {showDropAfter && (
+              <div className="absolute -bottom-4 left-0 right-0 h-2 flex items-center justify-center z-20">
+                <div className="w-full h-1 bg-blue-500 rounded-full shadow-lg"></div>
+              </div>
             )}
             {showDropLeft && (
-              <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-500 rounded-full shadow-lg"></div>
-            )}
-            {showDropCenter && (
-              <div className="absolute inset-0 border-2 border-blue-500 rounded-lg shadow-lg pointer-events-none"></div>
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-16 bg-blue-500 rounded-r-full shadow-lg z-20"></div>
             )}
             {showDropRight && (
-              <div className="absolute right-0 top-0 bottom-0 w-1 bg-blue-500 rounded-full shadow-lg"></div>
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-16 bg-blue-500 rounded-l-full shadow-lg z-20"></div>
             )}
 
             <CardHeader className="flex flex-row items-center justify-between pb-1">
@@ -915,7 +903,7 @@ export default function Dashboard() {
                   onDragStart={(e) => handleDragStart(e, "help")}
                   onDragEnd={handleDragEnd}
                 >
-                  <Image src="/OS3-Synergy-default-dashboard/icons/saf-button-icon_drag.svg" alt="Drag" width={16} height={16} />
+                  <Image src="/icons/saf-button-icon_drag.svg" alt="Drag" width={16} height={16} />
                 </Button>
                 <Button
                   variant="ghost"
@@ -923,7 +911,7 @@ export default function Dashboard() {
                   className="px-0 hover:bg-gray-100 hover:scale-105 transition-all duration-200 cursor-pointer"
                   onClick={() => toggleWidgetSize("help")}
                 >
-                  <Image src="/OS3-Synergy-default-dashboard/icons/expand-icon.png" alt="Expand" width={20} height={20} />
+                  <Image src="/icons/expand-icon.png" alt="Expand" width={20} height={20} />
                 </Button>
                 <Button
                   variant="ghost"
@@ -933,61 +921,71 @@ export default function Dashboard() {
               </div>
             </CardHeader>
             <CardContent className={`pt-0 ${widgetSizes.help === "half" ? "space-y-1 overflow-y-auto" : "space-y-1"}`}>
-              <Card className="border border-gray-200 hover:shadow-md hover:bg-[#EDF2F0] hover:border-[#1D4B34] transition-all cursor-pointer px-2 h-auto py-2 my-3.5">
-                <CardContent className={widgetSizes.help === "half" ? "p-1.5" : "p-2"}>
-                  {" "}
-                  {/* Reduced padding from p-3/p-2 to p-2/p-1.5 */}
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h4
-                        className={`font-medium hover:text-[#1D4B34] mb-0.5 ${widgetSizes.help === "half" ? "text-xs" : "text-sm"}`}
-                      >
-                        ONESOURCE Platform help and support
-                      </h4>
-                      <p
-                        className={`text-gray-600 hover:text-[#1D4B34] ${widgetSizes.help === "half" ? "text-xs" : "text-xs"}`}
-                      >
-                        Browse guides and docs
-                      </p>
+              <a
+                href="https://www.thomsonreuters.com/en-us/help"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block"
+              >
+                <Card className="border border-gray-200 hover:shadow-md hover:bg-[#EDF2F0] hover:border-[#1D4B34] transition-all cursor-pointer px-2 h-auto py-2 my-3.5">
+                  <CardContent className={widgetSizes.help === "half" ? "p-1.5" : "p-2"}>
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <h4
+                          className={`font-medium hover:text-[#1D4B34] mb-0.5 ${widgetSizes.help === "half" ? "text-xs" : "text-sm"}`}
+                        >
+                          ONESOURCE Platform help and support
+                        </h4>
+                        <p
+                          className={`text-gray-600 hover:text-[#1D4B34] ${widgetSizes.help === "half" ? "text-xs" : "text-xs"}`}
+                        >
+                          Browse guides and docs
+                        </p>
+                      </div>
+                      <Image
+                        src="/icons/external-link-icon.png"
+                        alt="External link"
+                        width={widgetSizes.help === "half" ? 14 : 18}
+                        height={widgetSizes.help === "half" ? 14 : 18}
+                        className="text-gray-400"
+                      />
                     </div>
-                    <Image
-                      src="/OS3-Synergy-default-dashboard/icons/external-link-icon.png"
-                      alt="External link"
-                      width={widgetSizes.help === "half" ? 14 : 18}
-                      height={widgetSizes.help === "half" ? 14 : 18}
-                      className="text-gray-400"
-                    />
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              </a>
 
-              <Card className="border border-gray-200 hover:shadow-md hover:bg-[#EDF2F0] hover:border-[#1D4B34] transition-all cursor-pointer py-2 px-1.5 my-3.5 mx-0">
-                <CardContent className={widgetSizes.help === "half" ? "p-1.5" : "p-2"}>
-                  {" "}
-                  {/* Reduced padding from p-3/p-2 to p-2/p-1.5 */}
-                  <div className="flex items-start justify-between px-px">
-                    <div className="mx-0 px-0">
-                      <h4
-                        className={`font-medium hover:text-[#1D4B34] mb-0.5 ${widgetSizes.help === "half" ? "text-xs" : "text-sm"}`}
-                      >
-                        Support tickets
-                      </h4>
-                      <p
-                        className={`text-gray-600 hover:text-[#1D4B34] ${widgetSizes.help === "half" ? "text-xs" : "text-xs"}`}
-                      >
-                        Open Ticket: #12345 API Integration Issue - In Progress
-                      </p>
+              <a
+                href="https://signon.thomsonreuters.com/v2?productid=MKTTAX&bhcp=1"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block"
+              >
+                <Card className="border border-gray-200 hover:shadow-md hover:bg-[#EDF2F0] hover:border-[#1D4B34] transition-all cursor-pointer py-2 px-1.5 my-3.5 mx-0">
+                  <CardContent className={widgetSizes.help === "half" ? "p-1.5" : "p-2"}>
+                    <div className="flex items-start justify-between px-px">
+                      <div className="mx-0 px-0">
+                        <h4
+                          className={`font-medium hover:text-[#1D4B34] mb-0.5 ${widgetSizes.help === "half" ? "text-xs" : "text-sm"}`}
+                        >
+                          Support tickets
+                        </h4>
+                        <p
+                          className={`text-gray-600 hover:text-[#1D4B34] ${widgetSizes.help === "half" ? "text-xs" : "text-xs"}`}
+                        >
+                          Open Ticket: #12345 API Integration Issue - In Progress
+                        </p>
+                      </div>
+                      <Image
+                        src="/icons/external-link-icon.png"
+                        alt="External link"
+                        width={widgetSizes.help === "half" ? 14 : 18}
+                        height={widgetSizes.help === "half" ? 14 : 18}
+                        className="text-gray-400"
+                      />
                     </div>
-                    <Image
-                      src="/OS3-Synergy-default-dashboard/icons/external-link-icon.png"
-                      alt="External link"
-                      width={widgetSizes.help === "half" ? 14 : 18}
-                      height={widgetSizes.help === "half" ? 14 : 18}
-                      className="text-gray-400"
-                    />
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              </a>
 
               <div className="flex justify-end py-4 my-0">
                 <Button
@@ -1010,22 +1008,26 @@ export default function Dashboard() {
         return (
           <Card
             key="activity"
-            className={`gap-0 ${baseClasses} ${heightClasses} relative`}
+            className={`mb-4 leading-7 gap-0 ${baseClasses} ${heightClasses} relative`}
             onDragOver={(e) => handleDragOver(e, "activity")}
             onDragLeave={handleDragLeave}
             onDrop={(e) => handleDrop(e, "activity")}
           >
             {showDropBefore && (
-              <div className="h-1 bg-blue-500 rounded-full mb-2 shadow-lg absolute -top-2 left-0 right-0"></div>
+              <div className="absolute -top-4 left-0 right-0 h-2 flex items-center justify-center z-20">
+                <div className="w-full h-1 bg-blue-500 rounded-full shadow-lg"></div>
+              </div>
+            )}
+            {showDropAfter && (
+              <div className="absolute -bottom-4 left-0 right-0 h-2 flex items-center justify-center z-20">
+                <div className="w-full h-1 bg-blue-500 rounded-full shadow-lg"></div>
+              </div>
             )}
             {showDropLeft && (
-              <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-500 rounded-full shadow-lg"></div>
-            )}
-            {showDropCenter && (
-              <div className="absolute inset-0 border-2 border-blue-500 rounded-lg shadow-lg pointer-events-none"></div>
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-16 bg-blue-500 rounded-r-full shadow-lg z-20"></div>
             )}
             {showDropRight && (
-              <div className="absolute right-0 top-0 bottom-0 w-1 bg-blue-500 rounded-full shadow-lg"></div>
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-16 bg-blue-500 rounded-l-full shadow-lg z-20"></div>
             )}
 
             <CardHeader className="flex flex-row items-center justify-between pb-1">
@@ -1039,7 +1041,7 @@ export default function Dashboard() {
                   onDragStart={(e) => handleDragStart(e, "activity")}
                   onDragEnd={handleDragEnd}
                 >
-                  <Image src="/OS3-Synergy-default-dashboard/icons/saf-button-icon_drag.svg" alt="Drag" width={16} height={16} />
+                  <Image src="/icons/saf-button-icon_drag.svg" alt="Drag" width={16} height={16} />
                 </Button>
                 <Button
                   variant="ghost"
@@ -1047,7 +1049,7 @@ export default function Dashboard() {
                   className="px-0 hover:bg-gray-100 hover:scale-105 transition-all duration-200 cursor-pointer"
                   onClick={() => toggleWidgetSize("activity")}
                 >
-                  <Image src="/OS3-Synergy-default-dashboard/icons/expand-icon.png" alt="Expand" width={20} height={20} />
+                  <Image src="/icons/expand-icon.png" alt="Expand" width={20} height={20} />
                 </Button>
                 <Button
                   variant="ghost"
@@ -1077,7 +1079,7 @@ export default function Dashboard() {
                       </div>
                     </div>
                     <Image
-                      src="/OS3-Synergy-default-dashboard/icons/external-link-icon.png"
+                      src="/icons/external-link-icon.png"
                       alt="External link"
                       width={widgetSizes.activity === "half" ? 14 : 18}
                       height={widgetSizes.activity === "half" ? 14 : 18}
@@ -1105,7 +1107,7 @@ export default function Dashboard() {
                       </div>
                     </div>
                     <Image
-                      src="/OS3-Synergy-default-dashboard/icons/external-link-icon.png"
+                      src="/icons/external-link-icon.png"
                       alt="External link"
                       width={widgetSizes.activity === "half" ? 14 : 18}
                       height={widgetSizes.activity === "half" ? 14 : 18}
@@ -1133,7 +1135,7 @@ export default function Dashboard() {
                       </div>
                     </div>
                     <Image
-                      src="/OS3-Synergy-default-dashboard/icons/external-link-icon.png"
+                      src="/icons/external-link-icon.png"
                       alt="External link"
                       width={widgetSizes.activity === "half" ? 14 : 18}
                       height={widgetSizes.activity === "half" ? 14 : 18}
@@ -1161,7 +1163,7 @@ export default function Dashboard() {
                       </div>
                     </div>
                     <Image
-                      src="/OS3-Synergy-default-dashboard/icons/external-link-icon.png"
+                      src="/icons/external-link-icon.png"
                       alt="External link"
                       width={widgetSizes.activity === "half" ? 14 : 18}
                       height={widgetSizes.activity === "half" ? 14 : 18}
@@ -1188,7 +1190,7 @@ export default function Dashboard() {
                           </div>
                         </div>
                         <Image
-                          src="/OS3-Synergy-default-dashboard/icons/external-link-icon.png"
+                          src="/icons/external-link-icon.png"
                           alt="External link"
                           width={18}
                           height={18}
@@ -1213,7 +1215,7 @@ export default function Dashboard() {
                           </div>
                         </div>
                         <Image
-                          src="/OS3-Synergy-default-dashboard/icons/external-link-icon.png"
+                          src="/icons/external-link-icon.png"
                           alt="External link"
                           width={18}
                           height={18}
@@ -1233,22 +1235,26 @@ export default function Dashboard() {
         return (
           <Card
             key="system-monitoring"
-            className={`gap-0 ${baseClasses} ${heightClasses} relative`}
+            className={`mb-4 leading-7 gap-0 ${baseClasses} ${heightClasses} relative`}
             onDragOver={(e) => handleDragOver(e, "system-monitoring")}
             onDragLeave={handleDragLeave}
             onDrop={(e) => handleDrop(e, "system-monitoring")}
           >
             {showDropBefore && (
-              <div className="h-1 bg-blue-500 rounded-full mb-2 shadow-lg absolute -top-2 left-0 right-0"></div>
+              <div className="absolute -top-4 left-0 right-0 h-2 flex items-center justify-center z-20">
+                <div className="w-full h-1 bg-blue-500 rounded-full shadow-lg"></div>
+              </div>
+            )}
+            {showDropAfter && (
+              <div className="absolute -bottom-4 left-0 right-0 h-2 flex items-center justify-center z-20">
+                <div className="w-full h-1 bg-blue-500 rounded-full shadow-lg"></div>
+              </div>
             )}
             {showDropLeft && (
-              <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-500 rounded-full shadow-lg"></div>
-            )}
-            {showDropCenter && (
-              <div className="absolute inset-0 border-2 border-blue-500 rounded-lg shadow-lg pointer-events-none"></div>
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-16 bg-blue-500 rounded-r-full shadow-lg z-20"></div>
             )}
             {showDropRight && (
-              <div className="absolute right-0 top-0 bottom-0 w-1 bg-blue-500 rounded-full shadow-lg"></div>
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-16 bg-blue-500 rounded-l-full shadow-lg z-20"></div>
             )}
 
             <CardHeader className="flex flex-row items-center justify-between pb-1">
@@ -1262,7 +1268,7 @@ export default function Dashboard() {
                   onDragStart={(e) => handleDragStart(e, "system-monitoring")}
                   onDragEnd={handleDragEnd}
                 >
-                  <Image src="/OS3-Synergy-default-dashboard/icons/saf-button-icon_drag.svg" alt="Drag" width={16} height={16} />
+                  <Image src="/icons/saf-button-icon_drag.svg" alt="Drag" width={16} height={16} />
                 </Button>
                 <Button
                   variant="ghost"
@@ -1270,14 +1276,14 @@ export default function Dashboard() {
                   className="px-0 hover:bg-gray-100 hover:scale-105 transition-all duration-200 cursor-pointer"
                   onClick={() => toggleWidgetSize("system-monitoring")}
                 >
-                  <Image src="/OS3-Synergy-default-dashboard/icons/expand-icon.png" alt="Expand" width={20} height={20} />
+                  <Image src="/icons/expand-icon.png" alt="Expand" width={20} height={20} />
                 </Button>
                 <Button
                   variant="ghost"
                   size="sm"
                   className="px-0 hover:bg-gray-100 hover:scale-105 transition-all duration-200 cursor-pointer"
                 >
-                  <Image src="/OS3-Synergy-default-dashboard/icons/menu-dots-icon.png" alt="Menu" width={20} height={20} />
+                  <Image src="/icons/menu-dots-icon.png" alt="Menu" width={20} height={20} />
                 </Button>
               </div>
             </CardHeader>
@@ -1396,22 +1402,26 @@ export default function Dashboard() {
         return (
           <Card
             key="user-management"
-            className={`gap-0 ${baseClasses} ${heightClasses} relative`}
+            className={`mb-4 leading-7 gap-0 ${baseClasses} ${heightClasses} relative flex flex-col`}
             onDragOver={(e) => handleDragOver(e, "user-management")}
             onDragLeave={handleDragLeave}
             onDrop={(e) => handleDrop(e, "user-management")}
           >
             {showDropBefore && (
-              <div className="h-1 bg-blue-500 rounded-full mb-2 shadow-lg absolute -top-2 left-0 right-0"></div>
+              <div className="absolute -top-4 left-0 right-0 h-2 flex items-center justify-center z-20">
+                <div className="w-full h-1 bg-blue-500 rounded-full shadow-lg"></div>
+              </div>
+            )}
+            {showDropAfter && (
+              <div className="absolute -bottom-4 left-0 right-0 h-2 flex items-center justify-center z-20">
+                <div className="w-full h-1 bg-blue-500 rounded-full shadow-lg"></div>
+              </div>
             )}
             {showDropLeft && (
-              <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-500 rounded-full shadow-lg"></div>
-            )}
-            {showDropCenter && (
-              <div className="absolute inset-0 border-2 border-blue-500 rounded-lg shadow-lg pointer-events-none"></div>
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-16 bg-blue-500 rounded-r-full shadow-lg z-20"></div>
             )}
             {showDropRight && (
-              <div className="absolute right-0 top-0 bottom-0 w-1 bg-blue-500 rounded-full shadow-lg"></div>
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-16 bg-blue-500 rounded-l-full shadow-lg z-20"></div>
             )}
 
             <CardHeader className="flex flex-row items-center justify-between pb-1">
@@ -1425,7 +1435,7 @@ export default function Dashboard() {
                   onDragStart={(e) => handleDragStart(e, "user-management")}
                   onDragEnd={handleDragEnd}
                 >
-                  <Image src="/OS3-Synergy-default-dashboard/icons/saf-button-icon_drag.svg" alt="Drag" width={16} height={16} />
+                  <Image src="/icons/saf-button-icon_drag.svg" alt="Drag" width={16} height={16} />
                 </Button>
                 <Button
                   variant="ghost"
@@ -1433,39 +1443,37 @@ export default function Dashboard() {
                   className="px-0 hover:bg-gray-100 hover:scale-105 transition-all duration-200 cursor-pointer"
                   onClick={() => toggleWidgetSize("user-management")}
                 >
-                  <Image src="/OS3-Synergy-default-dashboard/icons/expand-icon.png" alt="Expand" width={20} height={20} />
+                  <Image src="/icons/expand-icon.png" alt="Expand" width={20} height={20} />
                 </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="px-0 hover:bg-gray-100 hover:scale-105 transition-all duration-200 cursor-pointer"
-                >
-                  <Image src="/OS3-Synergy-default-dashboard/icons/menu-dots-icon.png" alt="Menu" width={20} height={20} />
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="px-0 hover:bg-gray-100 hover:scale-105 transition-all duration-200 cursor-pointer"
+                    >
+                      <Image src="/icons/menu-dots-icon.png" alt="Menu" width={20} height={20} />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem className="cursor-pointer">View all users ({users.length})</DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer">Remove users</DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer">Edit permissions</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </CardHeader>
-            <CardContent
-              className={`pt-0 ${widgetSizes["user-management"] === "half" ? "space-y-1 overflow-y-auto" : "space-y-2"}`}
-            >
-              {/* Quick Actions */}
-              <div className="flex gap-2 mb-3 justify-end">
-                <Button
-                  className={`bg-[#123021] hover:bg-[#EDF2F0] hover:border-[#1D4B34] hover:border-2 hover:text-[#1D4B34] border border-[#1D4B34] shadow-sm rounded text-white flex items-center gap-2 cursor-pointer ${widgetSizes["user-management"] === "half" ? "text-xs px-3 py-1.5" : "text-sm px-4 py-2"}`}
-                  style={{ boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.16)" }}
-                >
-                  <Plus className={widgetSizes["user-management"] === "half" ? "w-3 h-3" : "w-4 h-4"} />
-                  Add User
-                </Button>
-              </div>
-
-              {/* User List */}
-              <div className="space-y-1">
+            <CardContent className="pt-0 flex-1 flex flex-col overflow-hidden">
+              {/* User List - Scrollable */}
+              <div
+                className={`flex-1 overflow-y-auto ${widgetSizes["user-management"] === "half" ? "space-y-1" : "space-y-2"}`}
+              >
                 {users.slice(0, widgetSizes["user-management"] === "half" ? 3 : 4).map((user) => (
                   <Card
                     key={user.id}
-                    className="border border-gray-200 hover:shadow-md hover:bg-[#EDF2F0] hover:border-[#1D4B34] transition-all cursor-pointer"
+                    className="border-gray-200 hover:shadow-md hover:bg-[#EDF2F0] hover:border-[#1D4B34] transition-all cursor-pointer border px-0 mx-0 py-2 my-2.5"
                   >
-                    <CardContent className={widgetSizes["user-management"] === "half" ? "p-2" : "p-3"}>
+                    <CardContent className={widgetSizes["user-management"] === "half" ? "p-1.5" : "p-2"}>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center ml-3">
@@ -1508,10 +1516,16 @@ export default function Dashboard() {
                 ))}
               </div>
 
-              <div className="flex justify-end pt-2">
-                <Button variant="link" className="text-blue-600 text-sm p-0 cursor-pointer">
-                  View All Users ({users.length})
-                </Button>
+              <div className="sticky bottom-0 bg-white pt-4 pb-2 border-t border-gray-100 mt-2">
+                <div className="flex justify-end">
+                  <Button
+                    className={`bg-[#123021] hover:bg-[#EDF2F0] hover:border-[#1D4B34] hover:border-2 hover:text-[#1D4B34] border border-[#123021] shadow-sm rounded text-white flex items-center gap-2 cursor-pointer ${widgetSizes["user-management"] === "half" ? "text-xs px-3 py-1.5" : "text-sm px-4 py-2"}`}
+                    style={{ boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.16)" }}
+                  >
+                    <Plus className={widgetSizes["user-management"] === "half" ? "w-3 h-3" : "w-4 h-4"} />
+                    Add User
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -1637,7 +1651,7 @@ export default function Dashboard() {
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-6">
             <Image
-              src="/OS3-Synergy-default-dashboard/icons/thomson-reuters-official-logo.svg"
+              src="/icons/thomson-reuters-official-logo.svg"
               alt="Thomson Reuters Logo"
               width={194}
               height={26}
@@ -1653,7 +1667,7 @@ export default function Dashboard() {
                 ref={searchRef}
                 className="absolute right-0 top-0 flex items-center gap-2 bg-[#F7F7F7] border border-[#8A8A8A] rounded px-3 py-2 shadow-lg z-[100] h-10"
               >
-                <Image src="/OS3-Synergy-default-dashboard/icons/search-icon.svg" alt="Search" width={16} height={16} className="flex-shrink-0" />
+                <Image src="/icons/search-icon.svg" alt="Search" width={16} height={16} className="flex-shrink-0" />
                 <input
                   type="text"
                   placeholder="Search..."
@@ -1679,7 +1693,7 @@ export default function Dashboard() {
               className="relative group w-10 h-10 flex items-center justify-center cursor-pointer"
               onClick={() => setSearchOpen(true)}
             >
-              <Image src="/OS3-Synergy-default-dashboard/icons/search-icon.svg" alt="Search" width={16} height={16} />
+              <Image src="/icons/search-icon.svg" alt="Search" width={16} height={16} />
               <span className="absolute top-full left-1/2 -translate-x-1/2 mt-1 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">
                 Search
               </span>
@@ -1688,7 +1702,7 @@ export default function Dashboard() {
           <div className="h-6 w-px bg-white/30 mx-1"></div>
           <div className="relative group w-10 h-10 flex items-center justify-center">
             <Image
-              src="/OS3-Synergy-default-dashboard/icons/cocounsel-header-icon.svg"
+              src="/icons/cocounsel-header-icon.svg"
               alt="coCounsel"
               width={16}
               height={16}
@@ -1704,7 +1718,7 @@ export default function Dashboard() {
           </div>
           <div className="relative group w-10 h-10 flex items-center justify-center">
             <Image
-              src="/OS3-Synergy-default-dashboard/icons/notification-icon.svg"
+              src="/icons/notification-icon.svg"
               alt="Notifications"
               width={16}
               height={16}
@@ -1717,7 +1731,7 @@ export default function Dashboard() {
           </div>
           <div className="relative group w-10 h-10 flex items-center justify-center">
             <Image
-              src="/OS3-Synergy-default-dashboard/icons/user-profile-icon.svg"
+              src="/icons/user-profile-icon.svg"
               alt="Profile"
               width={16}
               height={16}
@@ -1744,19 +1758,19 @@ export default function Dashboard() {
               className="mb-3 p-0 h-auto hover:bg-gray-200 ml-auto block cursor-pointer"
               onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
             >
-              <Image src="/OS3-Synergy-default-dashboard/icons/back-arrow-icon.png" alt="Toggle Sidebar" width={20} height={20} />
+              <Image src="/icons/back-arrow-icon.png" alt="Toggle Sidebar" width={20} height={20} />
             </Button>
 
             <nav className="space-y-1">
               <div className="flex items-center gap-2 px-3 py-2 bg-[#EDF2F0] border-2 border-[#1D4B34] rounded min-h-[40px]">
-                <Image src="/OS3-Synergy-default-dashboard/icons/dashboard-grid-icon.png" alt="Dashboard" width={20} height={20} />
+                <Image src="/icons/dashboard-grid-icon.png" alt="Dashboard" width={20} height={20} />
                 {!sidebarCollapsed && <span className="font-medium text-gray-900">Dashboard</span>}
               </div>
 
               <Link href="/applications" className="block">
                 <div className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-[#EDF2F0] hover:border-2 hover:border-[#1D4B34] hover:text-[#1D4B34] rounded-md cursor-pointer transition-all duration-200">
                   <Image
-                    src="/OS3-Synergy-default-dashboard/icons/menu-grid-icon.png"
+                    src="/icons/menu-grid-icon.png"
                     alt="Applications"
                     width={20}
                     height={20}
@@ -1772,7 +1786,7 @@ export default function Dashboard() {
               <Link href="/system-status" className="block">
                 <div className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-[#EDF2F0] hover:border-2 hover:border-[#1D4B34] hover:text-[#1D4B34] rounded-md cursor-pointer transition-all duration-200">
                   <Image
-                    src="/OS3-Synergy-default-dashboard/icons/warning-triangle-icon.png"
+                    src="/icons/warning-triangle-icon.png"
                     alt="System Status"
                     width={20}
                     height={20}
@@ -1803,7 +1817,7 @@ export default function Dashboard() {
                 Customize view
               </Button>
               <Button
-                className="bg-[#123021] text-white hover:bg-[#EDF2F0] hover:border-[#1D4B34] hover:border-2 hover:text-[#1D4B34] border-2 border-[#123021] shadow-sm rounded flex items-center gap-2 min-h-[40px] cursor-pointer"
+                className="bg-[#123021] hover:bg-[#EDF2F0] hover:border-[#1D4B34] hover:border-2 hover:text-[#1D4B34] border-2 border-[#123021] shadow-sm rounded flex items-center gap-2 min-h-[40px] cursor-pointer"
                 style={{ boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.16)" }}
                 onClick={handleImportOpen}
               >
@@ -1814,62 +1828,34 @@ export default function Dashboard() {
           </div>
 
           <div className="space-y-4">
-            {/* Top row widgets */}
-            <div className="grid grid-cols-12 gap-4">
-              {widgetOrder.slice(0, 2).map((widgetId, index) => (
-                <div
-                  key={widgetId}
-                  className={`relative ${widgetSizes[widgetId] === "full" ? "col-span-12" : "col-span-6"}`}
-                >
-                  {/* Drop indicator before widget */}
-                  {dropPosition?.targetId === widgetId && dropPosition.position === "before" && (
-                    <div className="h-1 bg-blue-500 rounded-full mb-2 shadow-lg"></div>
-                  )}
-                  {dropPosition?.targetId === widgetId && dropPosition.position === "left" && (
-                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-500 rounded-full shadow-lg"></div>
-                  )}
-                  {dropPosition?.targetId === widgetId && dropPosition.position === "center" && (
-                    <div className="absolute inset-0 border-2 border-blue-500 rounded-lg shadow-lg pointer-events-none"></div>
-                  )}
-                  {dropPosition?.targetId === widgetId && dropPosition.position === "right" && (
-                    <div className="absolute right-0 top-0 bottom-0 w-1 bg-blue-500 rounded-full shadow-lg"></div>
-                  )}
-                  <div className="relative">{renderWidget(widgetId)}</div>
-                  {/* Drop indicator after widget */}
-                  {dropPosition?.targetId === widgetId && dropPosition.position === "after" && (
-                    <div className="h-1 bg-blue-500 rounded-full mt-2 shadow-lg"></div>
-                  )}
-                </div>
-              ))}
-            </div>
+            <div className="grid grid-cols-12 gap-4 auto-rows-auto">
+              {widgetOrder.map((widgetId) => {
+                if (!visibleCards[widgetId]) return null
 
-            {/* Bottom row widgets */}
-            <div className="grid grid-cols-12 gap-4">
-              {widgetOrder.slice(2).map((widgetId, index) => (
-                <div
-                  key={widgetId}
-                  className={`relative ${widgetSizes[widgetId] === "full" ? "col-span-12" : "col-span-6"}`}
-                >
-                  {/* Drop indicator before widget */}
-                  {dropPosition?.targetId === widgetId && dropPosition.position === "before" && (
-                    <div className="h-1 bg-blue-500 rounded-full mb-2 shadow-lg"></div>
-                  )}
-                  {dropPosition?.targetId === widgetId && dropPosition.position === "left" && (
-                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-500 rounded-full shadow-lg"></div>
-                  )}
-                  {dropPosition?.targetId === widgetId && dropPosition.position === "center" && (
-                    <div className="absolute inset-0 border-2 border-blue-500 rounded-lg shadow-lg pointer-events-none"></div>
-                  )}
-                  {dropPosition?.targetId === widgetId && dropPosition.position === "right" && (
-                    <div className="absolute right-0 top-0 bottom-0 w-1 bg-blue-500 rounded-full shadow-lg"></div>
-                  )}
-                  <div className="relative">{renderWidget(widgetId)}</div>
-                  {/* Drop indicator after widget */}
-                  {dropPosition?.targetId === widgetId && dropPosition.position === "after" && (
-                    <div className="h-1 bg-blue-500 rounded-full mt-2 shadow-lg"></div>
-                  )}
-                </div>
-              ))}
+                const colSpan = widgetSizes[widgetId] === "full" ? "col-span-12" : "col-span-6"
+
+                return (
+                  <div key={widgetId} className={`relative ${colSpan}`}>
+                    {/* Drop indicator before widget */}
+                    {dropPosition?.targetId === widgetId && dropPosition.position === "before" && (
+                      <div className="absolute -top-2 left-0 right-0 h-1 bg-blue-500 rounded-full shadow-lg z-10"></div>
+                    )}
+                    {/* Drop indicator left of widget */}
+                    {dropPosition?.targetId === widgetId && dropPosition.position === "left" && (
+                      <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-500 rounded-full shadow-lg z-10"></div>
+                    )}
+                    {/* Drop indicator right of widget */}
+                    {dropPosition?.targetId === widgetId && dropPosition.position === "right" && (
+                      <div className="absolute right-0 top-0 bottom-0 w-1 bg-blue-500 rounded-full shadow-lg z-10"></div>
+                    )}
+                    <div className="relative">{renderWidget(widgetId)}</div>
+                    {/* Drop indicator after widget */}
+                    {dropPosition?.targetId === widgetId && dropPosition.position === "after" && (
+                      <div className="absolute -bottom-2 left-0 right-0 h-1 bg-blue-500 rounded-full shadow-lg z-10"></div>
+                    )}
+                  </div>
+                )
+              })}
             </div>
           </div>
         </main>
@@ -1880,7 +1866,7 @@ export default function Dashboard() {
             {/* Panel Header */}
             <div className="flex items-center justify-between p-3 border-b border-gray-200 bg-gray-50 rounded-t-lg h-auto">
               <div className="flex items-center gap-2">
-                <Image src="/OS3-Synergy-default-dashboard/icons/cocounsel-logo.png" alt="CoCounsel" width={16} height={16} />
+                <Image src="/icons/cocounsel-logo.png" alt="CoCounsel" width={16} height={16} />
                 <span className="font-semibold text-gray-900 text-sm">CoCounsel</span>
               </div>
               <div className="flex items-center gap-2">
@@ -1890,13 +1876,13 @@ export default function Dashboard() {
                   className="p-1 h-6 hover:bg-gray-200 w-[32px ] cursor-pointer"
                   onClick={() => setCocounselMinimized(true)}
                 >
-                  <Image src="/OS3-Synergy-default-dashboard/icons/cocounsel-minimize.png" alt="Minimize" width={36} height={36} />
+                  <Image src="/icons/cocounsel-minimize.png" alt="Minimize" width={36} height={36} />
                 </Button>
                 <Button variant="ghost" size="sm" className="p-1 h-6 hover:bg-gray-200 w-8 cursor-pointer">
-                  <Image src="/OS3-Synergy-default-dashboard/icons/cocounsel-expand.png" alt="Expand" width={36} height={36} />
+                  <Image src="/icons/cocounsel-expand.png" alt="Expand" width={36} height={36} />
                 </Button>
                 <Button variant="ghost" size="sm" className="p-1 h-6 hover:bg-gray-200 w-8 cursor-pointer">
-                  <Image src="/OS3-Synergy-default-dashboard/icons/cocounsel-menu.png" alt="Menu" width={36} height={36} />
+                  <Image src="/icons/cocounsel-menu.png" alt="Menu" width={36} height={36} />
                 </Button>
               </div>
             </div>
@@ -1918,7 +1904,7 @@ export default function Dashboard() {
                   {/* Header with icon and timestamp */}
                   <div className="flex items-center gap-2">
                     <Image
-                      src="/OS3-Synergy-default-dashboard/icons/cocounsel-avatar.png"
+                      src="/icons/cocounsel-avatar.png"
                       alt="CoCounsel"
                       width={24}
                       height={24}
@@ -1965,7 +1951,7 @@ export default function Dashboard() {
         {cocounselOpen && cocounselMinimized && (
           <div className="fixed bottom-4 right-4 bg-white border border-gray-300 rounded-lg shadow-xl z-50 p-3">
             <div className="flex items-center gap-2">
-              <Image src="/OS3-Synergy-default-dashboard/icons/cocounsel-logo.png" alt="CoCounsel" width={16} height={16} />
+              <Image src="/icons/cocounsel-logo.png" alt="CoCounsel" width={16} height={16} />
               <span className="font-semibold text-gray-900 text-sm">CoCounsel</span>
               <Button
                 variant="ghost"
@@ -1973,7 +1959,7 @@ export default function Dashboard() {
                 className="p-1 h-6 w-6 hover:bg-gray-200 ml-2 cursor-pointer"
                 onClick={() => setCocounselMinimized(false)}
               >
-                <Image src="/OS3-Synergy-default-dashboard/icons/cocounsel-expand.png" alt="Expand" width={16} height={16} />
+                <Image src="/icons/cocounsel-expand.png" alt="Expand" width={16} height={16} />
               </Button>
               <Button
                 variant="ghost"
