@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: '/OS3-Synergy-default-dashboard/icons/favicon.ico',
+        url: '/icons/favicon.ico',
         sizes: 'any',
       },
     ],
