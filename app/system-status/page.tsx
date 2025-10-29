@@ -128,7 +128,7 @@ export default function SystemStatus() {
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-6">
             <Image
-              src="icons/thomson-reuters-official-logo.svg"
+              src="../icons/thomson-reuters-official-logo.svg"
               alt="Thomson Reuters Logo"
               width={194}
               height={26}
@@ -139,7 +139,7 @@ export default function SystemStatus() {
         </div>
         <div className="flex items-center gap-1">
           <div className="relative group w-10 h-10 flex items-center justify-center">
-            <Image src="icons/search-icon.svg" alt="Search" width={16} height={16} className="cursor-pointer" />
+            <Image src="../icons/search-icon.svg" alt="Search" width={16} height={16} className="cursor-pointer" />
             <span className="absolute top-full left-1/2 -translate-x-1/2 mt-1 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">
               Search
             </span>
@@ -147,7 +147,7 @@ export default function SystemStatus() {
           <div className="h-6 w-px bg-white/30 mx-1"></div>
           <div className="relative group w-10 h-10 flex items-center justify-center">
             <Image
-              src="icons/cocounsel-header-icon.svg"
+              src="../icons/cocounsel-header-icon.svg"
               alt="coCounsel"
               width={16}
               height={16}
@@ -160,7 +160,7 @@ export default function SystemStatus() {
           </div>
           <div className="relative group w-10 h-10 flex items-center justify-center">
             <Image
-              src="icons/notification-icon.svg"
+              src="../icons/notification-icon.svg"
               alt="Notifications"
               width={16}
               height={16}
@@ -173,7 +173,7 @@ export default function SystemStatus() {
           </div>
           <div className="relative group w-10 h-10 flex items-center justify-center">
             <Image
-              src="icons/user-profile-icon.svg"
+              src="../icons/user-profile-icon.svg"
               alt="Profile"
               width={16}
               height={16}
@@ -198,20 +198,20 @@ export default function SystemStatus() {
               className="mb-3 p-0 h-auto hover:bg-gray-200 ml-auto block"
               onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
             >
-              <Image src="icons/back-arrow-icon.png" alt="Toggle Sidebar" width={20} height={20} />
+              <Image src="../icons/back-arrow-icon.png" alt="Toggle Sidebar" width={20} height={20} />
             </Button>
 
             <nav className="space-y-1">
               <Link href="/" className="block">
                 <div className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-[#EDF2F0] hover:border-2 hover:border-[#1D4B34] hover:text-[#1D4B34] rounded-md cursor-pointer transition-all duration-200">
-                  <Image src="icons/dashboard-grid-icon.png" alt="Dashboard" width={20} height={20} />
+                  <Image src="../icons/dashboard-grid-icon.png" alt="Dashboard" width={20} height={20} />
                   {!sidebarCollapsed && <span>Dashboard</span>}
                 </div>
               </Link>
               <Link href="/applications" className="block">
                 <div className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-[#EDF2F0] hover:border-2 hover:border-[#1D4B34] hover:text-[#1D4B34] rounded-md cursor-pointer transition-all duration-200">
                   <Image
-                    src="icons/menu-grid-icon.png"
+                    src="../icons/menu-grid-icon.png"
                     alt="Applications"
                     width={20}
                     height={20}
@@ -221,7 +221,7 @@ export default function SystemStatus() {
                     <>
                       <span>My applications</span>
                       <Image
-                        src="icons/chevron-right-icon.png"
+                        src="../icons/chevron-right-icon.png"
                         alt="Expand"
                         width={16}
                         height={16}
@@ -232,7 +232,7 @@ export default function SystemStatus() {
                 </div>
               </Link>
               <div className="flex items-center gap-3 px-3 py-2 bg-[#EDF2F0] border-2 border-[#1D4B34] rounded-md shadow-sm">
-                <Image src="icons/warning-triangle-icon.png" alt="System Status" width={20} height={20} />
+                <Image src="../icons/warning-triangle-icon.png" alt="System Status" width={20} height={20} />
                 {!sidebarCollapsed && <span className="font-medium text-gray-900">System status</span>}
               </div>
             </nav>
